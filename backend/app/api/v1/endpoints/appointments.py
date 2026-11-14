@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from app.core.database import get_db
 from app.models.models import Appointment, Customer, Service
-from app.services.appointment_service import check_time_collision
+from app.services.appointment_service import check_time_collision, time_to_minutes
 
 router = APIRouter()
 
@@ -14,6 +14,20 @@ class AppointmentCreate(BaseModel):
     start_time: str
     end_time: str
     notes: str = ""
+
+    @field_validator("end_time")
+    @classmethod
+    def validate_times(cls, end_val, info):
+        start_val = info.data.get("start_time")
+        if start_val:
+            try:
+                s_min = time_to_minutes(start_val)
+                e_min = time_to_minutes(end_val)
+                if s_min >= e_min:
+                    raise ValueError("End time must be strictly after start time.")
+            except Exception as e:
+                raise ValueError(f"Invalid time format: {str(e)}")
+        return end_val
 
 @router.get("/")
 def list_appointments(db: Session = Depends(get_db)):
@@ -31,6 +45,15 @@ def list_appointments(db: Session = Depends(get_db)):
 
 @router.post("/")
 def book_appointment(req: AppointmentCreate, db: Session = Depends(get_db)):
+    # Verify customer and service exist
+    customer = db.query(Customer).filter(Customer.id == req.customer_id).first()
+    if not customer:
+        raise HTTPException(status_code=404, detail=f"Customer ID {req.customer_id} not found")
+
+    service = db.query(Service).filter(Service.id == req.service_id).first()
+    if not service:
+        raise HTTPException(status_code=404, detail=f"Service ID {req.service_id} not found")
+
     # Check collision across active appointments on same date
     existing = db.query(Appointment).filter(
         Appointment.appointment_date == req.appointment_date,
@@ -38,7 +61,12 @@ def book_appointment(req: AppointmentCreate, db: Session = Depends(get_db)):
     ).all()
 
     existing_slots = [(a.start_time, a.end_time) for a in existing]
-    if check_time_collision(req.start_time, req.end_time, existing_slots):
+    try:
+        collision = check_time_collision(req.start_time, req.end_time, existing_slots)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    if collision:
         raise HTTPException(
             status_code=409,
             detail=f"Time slot collision: Provider already booked between {req.start_time} and {req.end_time} on {req.appointment_date}."
