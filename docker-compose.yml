@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  bizdesk:
+    build: .
+    container_name: bizdesk
+    ports:
+      - "8003:8000"
+    environment:
+      - SECRET_KEY=bizdesk-production-secret-key-32-chars
+    volumes:
+      - ./backend/bizdesk.db:/app/bizdesk.db
+    restart: unless-stopped
