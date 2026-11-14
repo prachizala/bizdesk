@@ -50,3 +50,11 @@ def test_pdf_invoice_generation():
     assert os.path.exists(out_file)
     assert os.path.getsize(out_file) > 1000
     os.remove(out_file)
+
+
+def test_invalid_time_sequence():
+    from app.services.appointment_service import check_time_collision
+    with pytest.raises(ValueError) as exc:
+        # Start time after end time must raise ValueError
+        check_time_collision("14:00", "13:00", [("10:00", "11:00")])
+    assert "strictly before" in str(exc.value)
