@@ -4,7 +4,7 @@ BizDesk is a high-efficiency business operations suite designed for independent 
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 1. **Appointment Scheduler with Collision Prevention**:
    - Enforces temporal non-overlap constraints: $(A_{start} < B_{end}) \land (A_{end} > B_{start})$ preventing double-booking.
@@ -17,7 +17,7 @@ BizDesk is a high-efficiency business operations suite designed for independent 
 
 ---
 
-## 🚀 Quickstart Guide
+## Quickstart Guide
 
 ```bash
 cd backend
@@ -29,5 +29,5 @@ Open `http://localhost:8000` to interact with BizDesk.
 
 ---
 
-## 👤 Author
+## Author
 **Prachi Zala** | [GitHub](https://github.com/prachizala)
