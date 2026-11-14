@@ -1,12 +1,12 @@
 # Task Management Board (Day 1 - Day 7)
 ## Project: BizDesk
 
-| Task ID | Title / Work Item | Assignee Role | Status | Acceptance Criteria | Branch |
+| Task ID | Title / Work Item | Team Lead | Status | Acceptance Criteria | Branch |
 |---|---|---|---|---|---|
 | **T-BZD-001** | Day 1 Architecture & Specifications | Architect / PM | Done | PRD, ARCHITECTURE, DESIGN, and TASKS finalized | `docs/T-001-day1-specifications` |
 | **T-BZD-002** | Git Repository & CI Base Setup | DevOps Engineer | Done | `.gitignore`, `.env.example`, initial tag v0.1.0 | `chore/T-002-repo-setup` |
 | **T-BZD-003** | FastAPI Scaffolding & DB Models | Backend Engineer | Done | SQLAlchemy models for Business, Customer, Appointment, Invoice | `feat/T-003-db-models` |
-| **T-BZD-004** | JWT Authentication & Business Profiles | Security Reviewer | Done | Secure owner auth and preset configuration (Clinic/Salon/Coach) | `feat/T-004-auth-profiles` |
+| **T-BZD-004** | JWT Authentication & Business Profiles | Security Lead | Done | Secure owner auth and preset configuration (Clinic/Salon/Coach) | `feat/T-004-auth-profiles` |
 | **T-BZD-005** | Customer CRM Directory Endpoints | Backend Engineer | Done | Full CRUD customer directory with visit history aggregation | `feat/T-005-customer-crm` |
 | **T-BZD-006** | Appointment Scheduling & Conflict Engine | Backend Engineer | Done | Booking API with atomic collision validation | `feat/T-006-appointment-engine` |
 | **T-BZD-007** | Automated Invoicing & PDF Generation Engine | Backend / DevOps | Done | Automated tax/discount math and downloadable PDF generation | `feat/T-007-invoice-pdf` |
