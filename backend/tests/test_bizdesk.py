@@ -58,3 +58,18 @@ def test_invalid_time_sequence():
         # Start time after end time must raise ValueError
         check_time_collision("14:00", "13:00", [("10:00", "11:00")])
     assert "strictly before" in str(exc.value)
+
+
+def test_p2_empty_state_and_invalid_appointment_payload():
+    from fastapi.testclient import TestClient
+    from app.main import app
+    client = TestClient(app)
+
+    # Missing fields should return 422 Unprocessable Entity
+    res = client.post("/api/v1/appointments", json={})
+    assert res.status_code == 422
+
+    # Invoices list endpoint returns 200 array
+    inv_res = client.get("/api/v1/invoices")
+    assert inv_res.status_code == 200
+    assert isinstance(inv_res.json(), list)
