@@ -73,3 +73,19 @@ def test_p2_empty_state_and_invalid_appointment_payload():
     inv_res = client.get("/api/v1/invoices")
     assert inv_res.status_code == 200
     assert isinstance(inv_res.json(), list)
+
+
+def test_invoice_zero_tax_and_max_discount():
+    items = [{"description": "Basic Checkup", "quantity": 1, "unit_price": 500.0}]
+    # 0% tax, 500 discount => total = 0
+    t1 = calculate_invoice_totals(items, tax_rate_pct=0.0, discount_amount=500.0)
+    assert t1["subtotal"] == 500.0
+    assert t1["tax_amount"] == 0.0
+    assert t1["total_amount"] == 0.0
+
+def test_appointment_exact_adjacent_boundaries():
+    # Slot 1: 10:00 to 11:00
+    # Slot 2 starts exactly at 11:00 to 12:00 -> NO collision
+    assert check_time_collision("11:00", "12:00", [("10:00", "11:00")]) is False
+    # Slot 0 ends exactly at 10:00 -> NO collision
+    assert check_time_collision("09:00", "10:00", [("10:00", "11:00")]) is False
